@@ -20,5 +20,5 @@ General input dataset options:
 Example :
 
 ```
-python3.8 ssn2tsv.py -g mySSN.xgmml -o mySSN.tsv
+python3 ssn2tsv.py -g mySSN.xgmml -o mySSN.tsv
 ```
