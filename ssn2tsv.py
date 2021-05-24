@@ -383,6 +383,19 @@ general_option.add_argument("-g",'--xgmml',
                             dest="xgmml",
                             help="XGMML file from the analysis of EFI-EST : https://efi.igb.illinois.edu/efi-est/",
                             required=True)
+
+general_option.add_argument("-o",'--output',
+                            default=None,
+                            dest="output",
+                            metavar='<OUTPUT>',
+                            help="Name of the output file (default: [NAME_OF_XGMML]_table.tsv)")
+
+##########################################################################################
+
+"""
+Unused
+------
+
 general_option.add_argument("-f",'--full',
                             dest="full",
                             action='store_true',
@@ -392,13 +405,9 @@ general_option.add_argument("-t",'--taxonomy',
                             dest="taxonomy",
                             help="Add the taxonomy if present in the file, to have the best result of this feature \
                                   please use the full network not a reduced/concatenated one. Else only unique field will be written")
-general_option.add_argument("-o",'--output',
-                            default=None,
-                            dest="output",
-                            metavar='<OUTPUT>',
-                            help="Name of the output file (default: [NAME_OF_XGMML]_table.tsv)")
+"""
 
-##########################################################################################
+
 
 args = parser.parse_args()
 
@@ -415,9 +424,13 @@ XGMML = args.xgmml
 
 ##########################################################################################
 
+xgmml2tsv_full(XGMML, OUTPUT)
+
+'''
 if args.full :
     xgmml2tsv_full(XGMML, OUTPUT)
 elif args.taxonomy :
     xgmml2tsv_taxonomy(XGMML, OUTPUT)
 else :
     xgmml2tsv_default(XGMML, OUTPUT)
+'''
