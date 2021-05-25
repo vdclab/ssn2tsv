@@ -22,6 +22,50 @@ import re
 ##########################################################################################
 ##########################################################################################
 
+def clean_tsv(output, tmp, header_order):
+    '''
+    Second step of the full table to be sure that if a node have more item than the first one
+    it will create a table with all the informations for each line (add the new item to the header
+    and give extra blank item to the columns without)
+
+    :param output: name of the output final file
+    :type: str
+    :param tmp: name of the tmp file that will be remove at this step
+    :type: str
+    :param header_order: final name of the header with all the columns that appread of the ssn
+    :type: list of str
+    :return: nothing
+    '''
+
+    num_items_header = len(header_order)
+    header = True
+
+    with open(tmp, 'r') as r_file :
+        with open(output, 'w') as w_file :
+            for line in r_file :
+                line_rstrip = line.rstrip('\n')
+                line2list = line_rstrip.split('\t')
+
+                num_items = len(line2list)
+
+                if num_items != num_items_header :
+                    if header :
+                        w_file.write('\t'.join(header_order) + '\n')
+                        header = False
+                    else :
+                        to_add = num_items_header - num_items
+
+                        line_rstrip += '\t' * to_add
+                        w_file.write(line_rstrip + '\n')
+                else :
+                    w_file.write(line)
+    os.remove(tmp)
+
+    return
+
+##########################################################################################
+##########################################################################################
+
 def xgmml2tsv_full(xgmml, output) :
     '''
     Function that read the xgmml line by line and create the tsv in the same time
@@ -42,7 +86,7 @@ def xgmml2tsv_full(xgmml, output) :
     name_re = re.compile('name="([^"]+)')
 
     with open(xgmml, 'r') as g_file :
-        with open(output, 'w') as w_file :
+        with open('tmp.tsv', 'w') as w_file :
             for line in g_file:
                 if '</node>' in line :
                     node = False 
@@ -105,9 +149,14 @@ def xgmml2tsv_full(xgmml, output) :
                     else :
                         dict_columns[name].append(value)
 
-                    if name not in header_order and header:
+                    if name not in header_order:
                         header_order.append(name)
 
+    clean_tsv(output, 
+              'tmp.tsv',
+              header_order)
+
+    return
 
 
 
@@ -245,6 +294,7 @@ def xgmml2tsv_taxonomy(xgmml, output) :
 
                         if new_name not in header_order:
                             header_order.append(new_name)
+    return
 
 ##########################################################################################
 ##########################################################################################
@@ -364,6 +414,7 @@ def xgmml2tsv_default(xgmml, output) :
 
                         if new_name not in header_order:
                             header_order.append(new_name)
+    return
 
 ##########################################################################################
 ##########################################################################################
